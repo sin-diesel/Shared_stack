@@ -1,3 +1,8 @@
+
+
+#pragma once
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -19,6 +24,8 @@
 #define DBG(stmt) if (DEBUG) {stmt;}
 
 #define POISON 6666 
+
+#define SYNC 777
 
 
 typedef struct stack_t stack_t;

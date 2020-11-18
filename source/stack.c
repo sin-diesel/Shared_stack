@@ -1,5 +1,7 @@
 #include "stack.h"
 
+const char* sync_path = "/home/stanislav/Documents/MIPT/3rd_semester/Computer_technologies";
+
 //stack_t* stack_init(int size)
 
 //extern stack_t* stack_p;
@@ -102,4 +104,58 @@ int detach_stack(stack_t* stack) {
     //stack = POISON;
 
     return resop;
+}
+
+int mark_destruct(stack_t* stack) {
+    assert(stack != NULL);
+    DBG(fprintf(stdout, "Marking stack for destruction\n"))
+
+    int key = ftok(sync_path, SYNC);
+    if (key == -1) {
+        perror("Error in ftok(): ");
+    }
+
+    int id = shmget(key, 0, 0);
+    if (id == -1) {
+        perror("Error in shmget: ");
+    }
+
+    int resop = shmctl(id, IPC_RMID, 0);
+    if (resop == -1) {
+        perror("Error in marking stack for destruction: ");
+    }
+
+    return resop;
+
+}
+
+int push(stack_t* stack, void* val) {
+    int key = ftok(sync_path, SYNC);
+    if (key == -1) {
+        perror("Error in ftok(): ");
+    }
+
+    int sem_id = semget(key, 1, IPC_CREAT | 0666);
+    if (sem_id == -1) {
+        perror("Error in semget(): ");
+    }
+    struct sembuf semafor = {0, 1, 0};
+    int resop = semop(sem_id, &semafor, 1);
+
+    // taking semaphore
+    if (resop == -1) {
+        perror("Error in semget(): ");
+    }
+
+    void* dest = get_space(stack);
+    // releasing semaphore
+    semafor.sem_op = -1;
+    int resop = semop(sem_id, &semafor, 1);
+
+    if (resop == -1) {
+        perror("Error in semget(): ");
+    }
+
+
+
 }

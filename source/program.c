@@ -1,6 +1,6 @@
 #include "stack.h"
 
-#define SYNC 777
+extern const char* sync_path;
 
 //stack_t* stack;
 
@@ -9,7 +9,6 @@
 int main () {
 
     int stack_size = 10;
-    char* sync_path = "/home/stanislav/Documents/MIPT/3rd_semester/Computer_technologies";
 
     int key = ftok(sync_path, SYNC);
     if (key == -1) {
@@ -39,9 +38,9 @@ int main () {
 
     DBG(fprintf(stdout, "Stack pointer after detaching: %p\n", stack))
 
-    while (1) {
-        //waiting
-    }
+    mark_destruct(stack);
+
+    sleep(4);
 
     #endif
 

@@ -15,6 +15,12 @@
 #include <sys/shm.h>
 #include <sys/sem.h>
 
+#define DEBUG 1
+#define DBG(stmt) if (DEBUG) {stmt;}
+
+#define POISON 6666 
+
+
 typedef struct stack_t stack_t;
 
 struct stack_t {
@@ -28,7 +34,8 @@ Returns stack_t* in case of success. Returns NULL on failure. */
 stack_t* attach_stack(key_t key, int size);
 
 /* Detaches existing stack from process. 
-Operations on detached stack are not permitted since stack pointer becomes invalid. */
+Operations on detached stack are not permitted since stack pointer becomes invalid. Returns 
+ 0 on success and -1 if error occures */
 int detach_stack(stack_t* stack);
 
 

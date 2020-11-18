@@ -2,8 +2,7 @@
 
 //stack_t* stack_init(int size)
 
-#define DEBUG 1
-#define DBG(stmt) if (DEBUG) {stmt;}
+//extern stack_t* stack_p;
 
 void shmdel(int key, int size) {
     int id = shmget(key, size * sizeof(char), IPC_CREAT);
@@ -74,4 +73,33 @@ stack_t* attach_stack(key_t key, int size) {
     }
 
 
+}
+
+int get_size(stack_t* stack) {
+    assert(stack != NULL);
+    int size = stack->m_max_size;
+
+    return size;
+}
+
+int get_count(stack_t* stack) {
+    assert(stack != NULL);
+    int count = stack->m_cur_size;
+    
+    return count;
+}
+
+
+int detach_stack(stack_t* stack) {
+    int resop = 0;
+    resop = shmdt(stack);
+    if (resop == -1) {
+        perror("Error in detaching stack with shmdt(): ");
+    }
+
+    //stack = NULL;
+
+    //stack = POISON;
+
+    return resop;
 }

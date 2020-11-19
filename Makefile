@@ -19,4 +19,4 @@ program.o: $(SRC_DIR)/program.c
 
 .PHONY: clean
 clean:
-	rm $(OBJECTS) $(EXECUTABLES)
+	rm *.o 

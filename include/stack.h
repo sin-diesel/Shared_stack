@@ -20,6 +20,8 @@
 #include <sys/shm.h>
 #include <sys/sem.h>
 
+
+#define ERROR fprintf(stderr, "Error %s in %d %s\n", strerror(errno), __LINE__, __func__);
 #define DEBUG 1
 #define DBG(stmt) if (DEBUG) {stmt;}
 
@@ -33,12 +35,21 @@ typedef struct stack_t stack_t;
 struct stack_t {
     int m_max_size;
     int m_cur_size;
-    void* m_memory;
+
+    void** m_memory_begin;
+    void** m_memory_cur;
+    void** m_memory_end;
 };
 
 /* Attach (create if needed) shared memory stack to the process.
 Returns stack_t* in case of success. Returns NULL on failure. */
 stack_t* attach_stack(key_t key, int size);
+
+/* Deleting semaphore set */
+void semdel(int key);
+
+/* Print stack memory */
+void stack_print(stack_t* stack);
 
 /* Detaches existing stack from process. 
 Operations on detached stack are not permitted since stack pointer becomes invalid. Returns 
